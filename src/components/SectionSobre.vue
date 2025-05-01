@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\kenni\MeuProjetos\integrador\integrador\src\components\SectionSobre.vue -->
 <template>
   <section id="sobre">
     <h2>Sobre</h2>
@@ -8,3 +7,25 @@
     <p>O projeto melhora a qualidade de vida de quem depende de cuidados diários, alivia o peso financeiro de muitas famílias e reforça os laços que nos conectam como sociedade.</p>
   </section>
 </template>
+
+<style scoped>
+#sobre {
+  text-align: justify; /* Justifica o texto */
+  max-width: 800px; /* Define uma largura máxima para o texto */
+  margin: 0 auto; /* Centraliza a seção horizontalmente */
+  padding: 20px; /* Adiciona espaçamento interno */
+}
+
+#sobre h2 {
+  text-align: center; /* Centraliza o título */
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+#sobre p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  color: #555;
+}
+</style>

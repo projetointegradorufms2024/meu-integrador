@@ -1,4 +1,3 @@
-<!-- filepath: c:\Users\kenni\MeuProjetos\integrador\integrador\src\components\SectionReceber.vue -->
 <template>
   <section id="receber">
     <h2>Preciso Receber Fraldas</h2>
@@ -86,5 +85,56 @@ const limparFormulario = () => {
 </script>
 
 <style scoped>
-/* Adicione estilos específicos para o formulário, se necessário */
+#receber {
+  text-align: justify; /* Justifica o texto */
+  max-width: 800px; /* Define uma largura máxima para a seção */
+  margin: 0 auto; /* Centraliza a seção horizontalmente */
+  padding: 20px; /* Adiciona espaçamento interno */
+}
+
+#receber h2 {
+  text-align: center; /* Centraliza o título */
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.form-container {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  display: block;
+  margin: 0 auto;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
 </style>

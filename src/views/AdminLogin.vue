@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
   data() {
     return {
@@ -23,12 +25,37 @@ export default {
       password: '',
     }
   },
+  setup() {
+    const router = useRouter()
+
+    return {
+      router,
+    }
+  },
   methods: {
     handleLogin() {
-      if (this.username === 'admin' && this.password === '1234') {
-        alert('Login bem-sucedido!')
+      const username = this.username.trim().toLowerCase();
+      const password = this.password.trim();
+
+      const defaultCredentials = {
+        username: 'admin',
+        password: '1234',
+      };
+
+      if (username === defaultCredentials.username && password === defaultCredentials.password) {
+        // Emite um evento para o componente pai indicando que o administrador está logado
+        this.$emit('admin-logged-in', true);
+
+        // Redireciona para a página de redefinição de senha
+        this.$router.push('/reset-password');
+      } else if (username === 'admin' && password !== defaultCredentials.password) {
+        // Emite um evento para o componente pai indicando que o administrador está logado
+        this.$emit('admin-logged-in', true);
+
+        // Redireciona para o painel do administrador
+        this.$router.push('/admin-dashboard');
       } else {
-        alert('Credenciais inválidas.')
+        alert('Credenciais inválidas.');
       }
     },
   },
