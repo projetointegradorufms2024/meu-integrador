@@ -1,23 +1,21 @@
 <template>
   <div id="app">
-    <div class="container">
-      <header>
-        <div class="restricted-area">
-          <template v-if="isAdminPage">
-            <span>Olá Administrador</span>
-            <a @click="logout" class="logout-link">Sair</a>
-          </template>
-          <template v-else>
-            <a @click="goToAdminLogin">
-              Área Restrita <span>🔒</span>
-            </a>
-          </template>
-        </div>
-        <!-- Logo e Slogan -->
-        <div class="logo">SOS SOLIDARIEDADE</div>
-        <p class="slogan">Conectando doadores e acamados</p>
-      </header>
-    </div>
+    <header class="full-width-header">
+      <div class="restricted-area">
+        <template v-if="isAdminPage">
+          <span>Olá Administrador</span>
+          <a @click="logout" class="logout-link">Sair</a>
+        </template>
+        <template v-else>
+          <a @click="goToAdminLogin">
+            Área Restrita <span>🔒</span>
+          </a>
+        </template>
+      </div>
+      <!-- Logo e Slogan -->
+      <div class="logo">SOS SOLIDARIEDADE</div>
+      <p class="slogan">Conectando doadores e acamados</p>
+    </header>
     <!-- Renderiza o componente HomeView -->
     <router-view />
     <!-- Adiciona o rodapé -->
@@ -64,21 +62,16 @@ export default {
 
 <style scoped>
 /* Estilos para o cabeçalho */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-header {
-  position: relative;
+.full-width-header {
+  width: 100vw; /* Ocupa toda a largura da janela de visualização */
   text-align: center;
   padding: 30px 0;
   background: linear-gradient(135deg, #3498db, #2c3e50);
   color: white;
-  border-radius: 10px;
+  border-radius: 0; /* Remove bordas arredondadas */
   margin-bottom: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 /* Estilos para o link Área Restrita e Olá Administrador */
