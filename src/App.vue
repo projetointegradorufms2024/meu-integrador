@@ -81,7 +81,8 @@ export default {
   right: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 10px; /* Adiciona espaçamento entre os itens */
+  flex-wrap: wrap; /* Permite que os itens quebrem linha em telas menores */
 }
 
 .restricted-area a,
@@ -123,6 +124,29 @@ export default {
   font-size: 1.2rem;
   font-style: italic;
   opacity: 0.9;
+}
+
+/* Media query para telas menores */
+@media (max-width: 768px) {
+  .restricted-area {
+    top: auto; /* Remove a posição fixa no topo */
+    right: auto; /* Remove a posição fixa à direita */
+    justify-content: center; /* Centraliza os itens */
+    margin-top: 10px; /* Adiciona espaçamento acima */
+  }
+
+  .logo {
+    font-size: 2rem; /* Reduz o tamanho da logo */
+  }
+
+  .slogan {
+    font-size: 1rem; /* Reduz o tamanho do slogan */
+  }
+
+  .logout-link {
+    padding: 5px 10px; /* Reduz o tamanho do botão "Sair" */
+    font-size: 0.9rem; /* Reduz o tamanho da fonte */
+  }
 }
 </style>
 
