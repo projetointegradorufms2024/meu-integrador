@@ -46,6 +46,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import doacoesService from '@/services/doacoesService'; // Importe o serviço
 
 // Dados reativos para o formulário de doação
 const formDoacao = ref({
@@ -58,10 +59,32 @@ const formDoacao = ref({
 });
 
 // Método para enviar o formulário
-const enviarFormulario = (tipo) => {
+const enviarFormulario = async (tipo) => {
   if (tipo === 'doacao') {
-    alert(`Obrigado, ${formDoacao.value.nome}, por sua doação de ${formDoacao.value.quantidade} fraldas ${formDoacao.value.tipoFralda}!`);
-    limparFormulario();
+    try {
+      // Mapeando os valores de fralda para os esperados no banco
+      const tipoMapeado = {
+        infantil: 'P',   // "Infantil" será salvo como "P"
+        adulto: 'M',     // "Adulto" será salvo como "M"
+        geriatrica: 'G'  // "Geriátrica" será salvo como "G"
+      };
+
+      // Chama o serviço de doação com o tipo de fralda mapeado
+      const response = await doacoesService.criarDoacao({
+        nome: formDoacao.value.nome,
+        email: formDoacao.value.email,
+        telefone: formDoacao.value.telefone,
+        localizacao: formDoacao.value.localizacao,
+        tipo_fralda: tipoMapeado[formDoacao.value.tipoFralda] || '', // Mapeia para "P", "M" ou "G"
+        quantidade: formDoacao.value.quantidade
+      });
+
+      alert(`Doação de ${formDoacao.value.quantidade} fraldas realizada com sucesso!`);
+      limparFormulario(); // Limpa o formulário após envio
+    } catch (error) {
+      console.error('Erro ao enviar doação:', error);
+      alert('Erro ao enviar sua doação. Tente novamente mais tarde.');
+    }
   }
 };
 
@@ -80,14 +103,14 @@ const limparFormulario = () => {
 
 <style scoped>
 #doar {
-  text-align: justify; /* Justifica o texto */
-  max-width: 800px; /* Define uma largura máxima para a seção */
-  margin: 0 auto; /* Centraliza a seção horizontalmente */
-  padding: 20px; /* Adiciona espaçamento interno */
+  text-align: justify;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 #doar h2 {
-  text-align: center; /* Centraliza o título */
+  text-align: center;
   margin-bottom: 20px;
   font-size: 2rem;
   color: #2c3e50;

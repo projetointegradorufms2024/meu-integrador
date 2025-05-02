@@ -40,6 +40,11 @@
         </div>
 
         <div class="form-group">
+          <label for="quantidade">Quantidade Necessária:</label>
+          <input type="number" id="quantidade" v-model.number="formReceptor.quantidade" min="1" required />
+        </div>
+
+        <div class="form-group">
           <label for="info-adicional">Informações Adicionais:</label>
           <textarea id="info-adicional" v-model="formReceptor.infoAdicional" rows="3"></textarea>
         </div>
@@ -51,27 +56,56 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
+import axios from 'axios'
 
-// Dados reativos para o formulário de solicitação
 const formReceptor = ref({
   nome: '',
   email: '',
   telefone: '',
   localizacao: '',
   necessidade: '',
+  quantidade: null,
   infoAdicional: ''
-});
+})
 
-// Método para enviar o formulário
-const enviarFormulario = (tipo) => {
+const enviarFormulario = async (tipo) => {
   if (tipo === 'receber') {
-    alert(`Solicitação de ${formReceptor.value.nome} recebida! Entraremos em contato em breve.`);
-    limparFormulario();
-  }
-};
+    if (
+      !formReceptor.value.nome ||
+      !formReceptor.value.telefone ||
+      !formReceptor.value.localizacao ||
+      !formReceptor.value.necessidade ||
+      !formReceptor.value.quantidade
+    ) {
+      alert('Todos os campos obrigatórios devem ser preenchidos!')
+      return
+    }
 
-// Método para limpar o formulário após o envio
+    try {
+      const dadosEnviados = {
+        nome: formReceptor.value.nome,
+        email: formReceptor.value.email,
+        telefone: formReceptor.value.telefone,
+        localizacao: formReceptor.value.localizacao,
+        tipo_tamanho: formReceptor.value.necessidade,
+        quantidade: formReceptor.value.quantidade,
+        informacoes_adicionais: formReceptor.value.infoAdicional
+      }
+
+      console.log('Dados enviados para o backend:', dadosEnviados)
+
+      const response = await axios.post('http://localhost:3000/api/pedidos', dadosEnviados)
+
+      alert(`Solicitação de ${formReceptor.value.nome} recebida! Entraremos em contato em breve.`)
+      limparFormulario()
+    } catch (error) {
+      console.error('Erro ao enviar a solicitação:', error.response ? error.response.data : error.message)
+      alert(`Erro ao enviar a solicitação: ${error.response ? error.response.data.erro : error.message}`)
+    }
+  }
+}
+
 const limparFormulario = () => {
   formReceptor.value = {
     nome: '',
@@ -79,21 +113,22 @@ const limparFormulario = () => {
     telefone: '',
     localizacao: '',
     necessidade: '',
+    quantidade: null,
     infoAdicional: ''
-  };
-};
+  }
+}
 </script>
 
 <style scoped>
 #receber {
-  text-align: justify; /* Justifica o texto */
-  max-width: 800px; /* Define uma largura máxima para a seção */
-  margin: 0 auto; /* Centraliza a seção horizontalmente */
-  padding: 20px; /* Adiciona espaçamento interno */
+  text-align: justify;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 #receber h2 {
-  text-align: center; /* Centraliza o título */
+  text-align: center;
   margin-bottom: 20px;
   font-size: 2rem;
   color: #2c3e50;
