@@ -150,17 +150,19 @@ export default {
 <style scoped>
 .admin-dashboard {
   max-width: 900px;
-  margin: 50px auto;
-  padding: 20px;
+  margin: 20px auto;
+  padding: 15px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
+  font-size: 1.5rem;
 }
 
 section {
@@ -178,18 +180,43 @@ li {
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  word-wrap: break-word;
 }
 
 input {
-  margin: 5px 5px 5px 0;
-  padding: 5px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .buttons {
-  margin-top: 10px;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  margin-top: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .admin-dashboard {
+    padding: 10px;
+  }
+
+  input {
+    font-size: 0.95rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
 }
 </style>
