@@ -2,12 +2,30 @@
   <div class="admin-dashboard">
     <h1>Painel do Administrador</h1>
 
-    <!-- Seção de Solicitações de Doações -->
+    <!-- Seção de Solicitações de Fraldas -->
     <section>
-      <h2>Solicitações de Doações</h2>
+      <h2>Solicitações de Fraldas</h2>
       <ul>
-        <li v-for="(request, index) in donationRequests" :key="index">
-          {{ request.type }} - Tamanho: {{ request.size }} - Quantidade: {{ request.quantity }}
+        <li v-for="request in donationRequests" :key="request.id">
+          <div v-if="editRequestId === request.id">
+            <input v-model="request.nome" placeholder="Nome" />
+            <input v-model="request.email" placeholder="Email" />
+            <input v-model="request.telefone" placeholder="Telefone" />
+            <input v-model="request.tipo_tamanho" placeholder="Tipo/Tamanho" />
+            <input v-model.number="request.quantidade" placeholder="Quantidade" />
+            <input v-model="request.localizacao" placeholder="Localização" />
+            <div class="buttons">
+              <button @click="saveRequest(request)">Salvar</button>
+              <button @click="cancelEdit()">Cancelar</button>
+            </div>
+          </div>
+          <div v-else>
+            {{ request.nome }} ({{ request.email }}, {{ request.telefone }}) — {{ request.quantidade }} fralda(s) do tipo {{ request.tipo_tamanho }} em {{ request.localizacao }}
+            <div class="buttons">
+              <button @click="editRequestId = request.id">Editar</button>
+              <button @click="deleteRequest(request.id)">Excluir</button>
+            </div>
+          </div>
         </li>
       </ul>
     </section>
@@ -16,8 +34,26 @@
     <section>
       <h2>Doações Realizadas</h2>
       <ul>
-        <li v-for="(donation, index) in completedDonations" :key="index">
-          {{ donation.donor }} doou {{ donation.quantity }} {{ donation.type }} (Tamanho: {{ donation.size }}) para {{ donation.recipient }}
+        <li v-for="donation in completedDonations" :key="donation.id">
+          <div v-if="editDonationId === donation.id">
+            <input v-model="donation.nome" placeholder="Nome" />
+            <input v-model="donation.email" placeholder="Email" />
+            <input v-model="donation.telefone" placeholder="Telefone" />
+            <input v-model="donation.tipo_fralda" placeholder="Tipo Fralda" />
+            <input v-model.number="donation.quantidade" placeholder="Quantidade" />
+            <input v-model="donation.localizacao" placeholder="Localização" />
+            <div class="buttons">
+              <button @click="saveDonation(donation)">Salvar</button>
+              <button @click="cancelEdit()">Cancelar</button>
+            </div>
+          </div>
+          <div v-else>
+            {{ donation.nome }} ({{ donation.email }}, {{ donation.telefone }}) doou {{ donation.quantidade }} fralda(s) do tipo {{ donation.tipo_fralda }} em {{ donation.localizacao }}
+            <div class="buttons">
+              <button @click="editDonationId = donation.id">Editar</button>
+              <button @click="deleteDonation(donation.id)">Excluir</button>
+            </div>
+          </div>
         </li>
       </ul>
     </section>
@@ -25,65 +61,123 @@
 </template>
 
 <script>
+import {
+  fetchDonationRequests,
+  fetchCompletedDonations,
+  updateDonationRequest,
+  updateCompletedDonation,
+  deleteDonationRequest,
+  deleteCompletedDonation,
+} from '@/services/adminService';
+
 export default {
   name: 'AdminDashboard',
   data() {
     return {
-      donationRequests: [], // Lista de solicitações de doações
-      completedDonations: [], // Lista de doações realizadas
+      donationRequests: [],
+      completedDonations: [],
+      editRequestId: null,
+      editDonationId: null,
     };
   },
-  mounted() {
-    // Simula a busca de dados (substitua por uma chamada à API)
-    this.donationRequests = [
-      { type: 'Fralda Geriátrica', size: 'M', quantity: 20 },
-      { type: 'Fralda Infantil', size: 'RN', quantity: 50 },
-      { type: 'Fralda Adulto', size: 'G', quantity: 30 },
-    ];
-
-    this.completedDonations = [
-      { donor: 'Carlos', type: 'Fralda Geriátrica', size: 'P', quantity: 10, recipient: 'João' },
-      { donor: 'Ana', type: 'Fralda Infantil', size: 'M', quantity: 25, recipient: 'Maria' },
-    ];
+  async mounted() {
+    await this.loadData();
+  },
+  methods: {
+    async loadData() {
+      try {
+        const [requestsRes, donationsRes] = await Promise.all([
+          fetchDonationRequests(),
+          fetchCompletedDonations(),
+        ]);
+        this.donationRequests = requestsRes.data;
+        this.completedDonations = donationsRes.data;
+      } catch (error) {
+        console.error('Erro ao carregar dados do painel:', error);
+      }
+    },
+    async saveRequest(request) {
+      try {
+        await updateDonationRequest(request);
+        this.editRequestId = null;
+      } catch (err) {
+        console.error('Erro ao atualizar pedido:', err);
+      }
+    },
+    async saveDonation(donation) {
+      try {
+        await updateCompletedDonation(donation);
+        this.editDonationId = null;
+      } catch (err) {
+        console.error('Erro ao atualizar doação:', err);
+      }
+    },
+    cancelEdit() {
+      this.editRequestId = null;
+      this.editDonationId = null;
+      this.loadData();
+    },
+    async deleteRequest(id) {
+      if (confirm('Tem certeza que deseja excluir este pedido?')) {
+        try {
+          await deleteDonationRequest(id);
+          await this.loadData();
+        } catch (err) {
+          console.error('Erro ao excluir pedido:', err);
+        }
+      }
+    },
+    async deleteDonation(id) {
+      if (confirm('Tem certeza que deseja excluir esta doação?')) {
+        try {
+          await deleteCompletedDonation(id);
+          await this.loadData();
+        } catch (err) {
+          console.error('Erro ao excluir doação:', err);
+        }
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
 .admin-dashboard {
-  max-width: 800px;
+  max-width: 900px;
   margin: 50px auto;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
 }
-
 section {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
-
-h2 {
-  color: #3498db;
-  margin-bottom: 10px;
-}
-
 ul {
   list-style: none;
   padding: 0;
 }
-
 li {
   background-color: #fff;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+input {
+  margin: 5px 5px 5px 0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
 }
 </style>
