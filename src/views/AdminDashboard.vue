@@ -2,12 +2,12 @@
   <div class="admin-dashboard">
     <h1>Painel do Administrador</h1>
 
-    <!-- Seção de Solicitações de Fraldas -->
+    <!-- Solicitações -->
     <section>
       <h2>Solicitações de Fraldas</h2>
       <ul>
         <li v-for="(request, index) in donationRequests" :key="request.id">
-          <div v-if="editRequestId === request.id">
+          <div v-if="editRequestId === request.id" class="edit-form">
             <input v-model="request.nome" placeholder="Nome" />
             <input v-model="request.email" placeholder="Email" />
             <input v-model="request.telefone" placeholder="Telefone" />
@@ -34,12 +34,12 @@
       </ul>
     </section>
 
-    <!-- Seção de Doações Realizadas -->
+    <!-- Doações -->
     <section>
       <h2>Doações Realizadas</h2>
       <ul>
         <li v-for="(donation, index) in completedDonations" :key="donation.id">
-          <div v-if="editDonationId === donation.id">
+          <div v-if="editDonationId === donation.id" class="edit-form">
             <input v-model="donation.nome" placeholder="Nome" />
             <input v-model="donation.email" placeholder="Email" />
             <input v-model="donation.telefone" placeholder="Telefone" />
@@ -151,18 +151,18 @@ export default {
 .admin-dashboard {
   max-width: 900px;
   margin: 20px auto;
-  padding: 15px;
+  padding: 16px;
   background-color: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
 }
 
 section {
@@ -176,17 +176,16 @@ ul {
 
 li {
   background-color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  word-wrap: break-word;
 }
 
 input {
   width: 100%;
-  margin-bottom: 8px;
-  padding: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -200,10 +199,29 @@ input {
   margin-top: 10px;
 }
 
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2c3e50;
+  color: white;
+  cursor: pointer;
+  flex-grow: 1;
+  min-width: 120px;
+}
+
+button:hover {
+  background-color: #1a252f;
+}
+
 /* Responsividade */
 @media (max-width: 600px) {
   .admin-dashboard {
-    padding: 10px;
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 1.4rem;
   }
 
   input {
@@ -212,7 +230,6 @@ input {
 
   .buttons {
     flex-direction: column;
-    align-items: stretch;
   }
 
   button {
