@@ -6,7 +6,7 @@
     <section>
       <h2>Solicitações de Fraldas</h2>
       <ul>
-        <li v-for="request in donationRequests" :key="request.id">
+        <li v-for="(request, index) in donationRequests" :key="request.id">
           <div v-if="editRequestId === request.id">
             <input v-model="request.nome" placeholder="Nome" />
             <input v-model="request.email" placeholder="Email" />
@@ -20,7 +20,11 @@
             </div>
           </div>
           <div v-else>
-            {{ request.nome }} ({{ request.email }}, {{ request.telefone }}) — {{ request.quantidade }} fralda(s) do tipo {{ request.tipo_tamanho }} em {{ request.localizacao }}
+            <strong>{{ request.nome }}</strong><br />
+            Quantidade: {{ request.quantidade }} fralda(s) do tipo {{ request.tipo_tamanho }}<br />
+            Email: {{ request.email }}<br />
+            Telefone: {{ request.telefone }}<br />
+            Localização: {{ request.localizacao }}
             <div class="buttons">
               <button @click="editRequestId = request.id">Editar</button>
               <button @click="deleteRequest(request.id)">Excluir</button>
@@ -34,7 +38,7 @@
     <section>
       <h2>Doações Realizadas</h2>
       <ul>
-        <li v-for="donation in completedDonations" :key="donation.id">
+        <li v-for="(donation, index) in completedDonations" :key="donation.id">
           <div v-if="editDonationId === donation.id">
             <input v-model="donation.nome" placeholder="Nome" />
             <input v-model="donation.email" placeholder="Email" />
@@ -48,7 +52,11 @@
             </div>
           </div>
           <div v-else>
-            {{ donation.nome }} ({{ donation.email }}, {{ donation.telefone }}) doou {{ donation.quantidade }} fralda(s) do tipo {{ donation.tipo_fralda }} em {{ donation.localizacao }}
+            <strong>{{ donation.nome }}</strong><br />
+            Quantidade: {{ donation.quantidade }} fralda(s) do tipo {{ donation.tipo_fralda }}<br />
+            Email: {{ donation.email }}<br />
+            Telefone: {{ donation.telefone }}<br />
+            Localização: {{ donation.localizacao }}
             <div class="buttons">
               <button @click="editDonationId = donation.id">Editar</button>
               <button @click="deleteDonation(donation.id)">Excluir</button>
@@ -67,7 +75,7 @@ import {
   updateDonationRequest,
   updateCompletedDonation,
   deleteDonationRequest,
-  deleteCompletedDonation,
+  deleteCompletedDonation
 } from '@/services/adminService';
 
 export default {
@@ -100,6 +108,7 @@ export default {
       try {
         await updateDonationRequest(request);
         this.editRequestId = null;
+        this.loadData();
       } catch (err) {
         console.error('Erro ao atualizar pedido:', err);
       }
@@ -108,34 +117,31 @@ export default {
       try {
         await updateCompletedDonation(donation);
         this.editDonationId = null;
+        this.loadData();
       } catch (err) {
         console.error('Erro ao atualizar doação:', err);
+      }
+    },
+    async deleteRequest(id) {
+      try {
+        await deleteDonationRequest(id);
+        this.loadData();
+      } catch (err) {
+        console.error('Erro ao excluir pedido:', err);
+      }
+    },
+    async deleteDonation(id) {
+      try {
+        await deleteCompletedDonation(id);
+        this.loadData();
+      } catch (err) {
+        console.error('Erro ao excluir doação:', err);
       }
     },
     cancelEdit() {
       this.editRequestId = null;
       this.editDonationId = null;
       this.loadData();
-    },
-    async deleteRequest(id) {
-      if (confirm('Tem certeza que deseja excluir este pedido?')) {
-        try {
-          await deleteDonationRequest(id);
-          await this.loadData();
-        } catch (err) {
-          console.error('Erro ao excluir pedido:', err);
-        }
-      }
-    },
-    async deleteDonation(id) {
-      if (confirm('Tem certeza que deseja excluir esta doação?')) {
-        try {
-          await deleteCompletedDonation(id);
-          await this.loadData();
-        } catch (err) {
-          console.error('Erro ao excluir doação:', err);
-        }
-      }
     },
   },
 };
@@ -150,18 +156,22 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
 }
+
 section {
   margin-bottom: 40px;
 }
+
 ul {
   list-style: none;
   padding: 0;
 }
+
 li {
   background-color: #fff;
   margin-bottom: 10px;
@@ -169,12 +179,14 @@ li {
   border: 1px solid #ddd;
   border-radius: 5px;
 }
+
 input {
   margin: 5px 5px 5px 0;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
 .buttons {
   margin-top: 10px;
   display: flex;
