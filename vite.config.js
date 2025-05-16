@@ -15,4 +15,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  test: {
+    globals: true,             // permite usar funções como `describe` e `it` sem importar
+    environment: 'jsdom',      // simula o DOM para testes de componentes Vue
+    include: ['tests/**/*.test.js'] // onde estão os arquivos de teste
+  }
 })
